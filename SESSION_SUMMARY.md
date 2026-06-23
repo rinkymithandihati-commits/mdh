@@ -37,11 +37,18 @@ Maintain and improve Mitthan Di Hatti POS + QR ordering system.
 - **Business info extracted** — `BUSINESS_INFO` constant in billing page for print bill template (no more hardcoded phone/address in JSX)
 - **Blueprint doc fixed** — `ding.mp3` references updated to `bell.mp3` in `supabase_seed_blueprint.sql`
 
+### Done (Session 3 — Deployment Fixes)
+- **SSR build error fixed** — supabase client was being created at module load time during SSR/build. Refactored `src/lib/supabase.js` to use lazy Proxy pattern — client only created when accessed at runtime
+- **Vercel deployment** — pushed to `https://github.com/rinkymithandihati-commits/mdh.git`
+- **Vercel env vars required** — `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `ADMIN_PASSWORD` must be added in Vercel Settings → Environment Variables
+- **Supabase project** — `qlidbwmdrzhrhbndmcwy` (https://qlidbwmdrzhrhbndmcwy.supabase.co)
+
 ### Constraints
 - Supabase free tier: 200 realtime concurrent peak connections (NOT per day/month). If hit, new realtime connections rejected but manual refresh still works. Naturally drops as tabs close / phones sleep / heartbeat detects stale connections (~30-60s)
 - PostgreSQL handles 10+ concurrent writes easily — no race condition (UUID primary key)
 - Mobile network is the actual bottleneck, not Supabase
 - `.env.local` must exist with `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `ADMIN_PASSWORD` — file is gitignored
+- Vercel deployment requires same 3 env vars in Settings → Environment Variables
 
 ### Key Files Modified
 - `src/app/admin/billing/page.js` — menu_overrides fetch + realtime + merged items + error checking + print cleanup + business info extraction
@@ -50,7 +57,7 @@ Maintain and improve Mitthan Di Hatti POS + QR ordering system.
 - `src/app/admin/blueprint/page.js` — new page
 - `supabase_seed_blueprint.sql` — new file + ding.mp3 → bell.mp3 fix
 - `AGENTS.md` — simplified
-- `src/lib/supabase.js` — moved to env vars
+- `src/lib/supabase.js` — moved to env vars + lazy Proxy pattern for SSR compatibility
 - `src/lib/i18n.js` — added add, clear, confirmed keys
 - `src/context/CartContext.js` — localStorage persistence + default context values
 - `src/app/cart/page.js` — order type toggle + source + subtotal fields
@@ -79,3 +86,8 @@ Maintain and improve Mitthan Di Hatti POS + QR ordering system.
 - `src/components/ErrorBoundary.js` — React error boundary
 - `src/app/api/auth/route.js` — server-side admin password validation
 - `.env.local` — environment variables (gitignored)
+
+### Deployment
+- **Repo:** `https://github.com/rinkymithandihati-commits/mdh.git`
+- **Vercel:** `https://mdh-ruddy.vercel.app`
+- **Supabase project:** `qlidbwmdrzhrhbndmcwy`
