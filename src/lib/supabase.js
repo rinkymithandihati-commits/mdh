@@ -1,11 +1,25 @@
 "use client";
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+let supabaseInstance = null;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error("Missing Supabase environment variables. Check .env.local");
+function getSupabase() {
+  if (supabaseInstance) return supabaseInstance;
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.error("Missing Supabase environment variables. Check .env.local");
+    return createClient("", "");
+  }
+
+  supabaseInstance = createClient(supabaseUrl, supabaseAnonKey);
+  return supabaseInstance;
 }
 
-export const supabase = createClient(supabaseUrl ?? "", supabaseAnonKey ?? "");
+export const supabase = new Proxy({}, {
+  get(_, prop) {
+    return getSupabase()[prop];
+  }
+});
