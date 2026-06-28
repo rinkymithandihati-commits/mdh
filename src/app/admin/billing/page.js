@@ -73,17 +73,7 @@ export default function AdminBillingPage() {
   });
   const [placing, setPlacing] = useState(false);
   const [billSaved, setBillSaved] = useState(false);
-  const [editingOrderId, setEditingOrderId] = useState(() => {
-    if (typeof window === "undefined") return null;
-    const stored = sessionStorage.getItem("billOrder");
-    if (stored) {
-      try {
-        const order = JSON.parse(stored);
-        return order?.id || null;
-      } catch { return null; }
-    }
-    return null;
-  });
+  const [editingOrderId, setEditingOrderId] = useState(null);
   const [miscName, setMiscName] = useState("");
   const [miscPrice, setMiscPrice] = useState("");
   const [showPrintPreview, setShowPrintPreview] = useState(false);
